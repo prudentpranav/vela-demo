@@ -255,6 +255,57 @@
     .hc-metric-value { font-size: 15px; font-weight: 600; color: var(--text-primary); }
     .hc-metric-value.good { color: var(--green); }
 
+    .hc-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 0.5px solid var(--border);
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* ── Commitment summary bar ── */
+    .commitment-bar {
+      background: var(--white);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+
+    .cb-item { padding-right: 28px; }
+
+    .cb-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+      margin-bottom: 3px;
+    }
+
+    .cb-value { font-size: 17px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; }
+
+    .cb-divider { width: 0.5px; height: 36px; background: var(--border); margin-right: 28px; }
+
+    .cb-note {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      max-width: 320px;
+      line-height: 1.4;
+    }
+    .cb-note i { color: var(--amber); flex-shrink: 0; }
+
     /* ── Two-column body ── */
     .body-grid {
       display: grid;
@@ -407,13 +458,13 @@
 
     <!-- Capital account hero -->
     <div class="account-hero">
-      <div class="ah-label">Total capital account value</div>
-      <div class="ah-value">$612,400</div>
-      <div class="ah-change"><i class="ti ti-trending-up" style="font-size:14px;"></i> Across 2 active investments</div>
+      <div class="ah-label">Capital account value <span style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(255,255,255,0.45);">· est. NAV as of Q1 2026</span></div>
+      <div class="ah-value">$452,000</div>
+      <div class="ah-change"><i class="ti ti-trending-up" style="font-size:14px;"></i> Current value of your ownership across 2 investments</div>
       <div class="ah-stats">
         <div>
-          <div class="ah-stat-label">Total invested</div>
-          <div class="ah-stat-value">$550,000</div>
+          <div class="ah-stat-label">Contributed capital</div>
+          <div class="ah-stat-value">$388,080</div>
         </div>
         <div>
           <div class="ah-stat-label">Distributions received</div>
@@ -421,12 +472,34 @@
         </div>
         <div>
           <div class="ah-stat-label">Unrealized gain</div>
-          <div class="ah-stat-value">$62,400</div>
+          <div class="ah-stat-value">+$63,920</div>
         </div>
         <div>
           <div class="ah-stat-label">Blended IRR</div>
           <div class="ah-stat-value">17.2%</div>
         </div>
+      </div>
+    </div>
+
+    <!-- Commitment summary -->
+    <div class="commitment-bar">
+      <div class="cb-item">
+        <div class="cb-label">Total committed</div>
+        <div class="cb-value">$550,000</div>
+      </div>
+      <div class="cb-divider"></div>
+      <div class="cb-item">
+        <div class="cb-label">Called &amp; contributed</div>
+        <div class="cb-value">$388,080</div>
+      </div>
+      <div class="cb-divider"></div>
+      <div class="cb-item">
+        <div class="cb-label">Remaining uncalled commitment</div>
+        <div class="cb-value" style="color:var(--amber);">$161,920</div>
+      </div>
+      <div class="cb-note">
+        <i class="ti ti-info-circle" style="font-size:14px;"></i>
+        Uncalled commitment is a future obligation — it is not part of your account value until called.
       </div>
     </div>
 
@@ -442,12 +515,12 @@
         </div>
         <div class="hc-metrics">
           <div>
-            <div class="hc-metric-label">Your commitment</div>
-            <div class="hc-metric-value">$400,000</div>
+            <div class="hc-metric-label">Contributed</div>
+            <div class="hc-metric-value">$238,080</div>
           </div>
           <div>
-            <div class="hc-metric-label">Capital called</div>
-            <div class="hc-metric-value">$238,080</div>
+            <div class="hc-metric-label">Current value</div>
+            <div class="hc-metric-value good">$250,000</div>
           </div>
           <div>
             <div class="hc-metric-label">Ownership</div>
@@ -457,6 +530,10 @@
             <div class="hc-metric-label">Distributions</div>
             <div class="hc-metric-value good">$11,200</div>
           </div>
+        </div>
+        <div class="hc-foot">
+          <span>Commitment $400,000</span>
+          <span style="color:var(--amber);">$161,920 uncalled</span>
         </div>
       </div>
 
@@ -470,12 +547,12 @@
         </div>
         <div class="hc-metrics">
           <div>
-            <div class="hc-metric-label">Your commitment</div>
+            <div class="hc-metric-label">Contributed</div>
             <div class="hc-metric-value">$150,000</div>
           </div>
           <div>
-            <div class="hc-metric-label">Capital called</div>
-            <div class="hc-metric-value">$150,000</div>
+            <div class="hc-metric-label">Current value</div>
+            <div class="hc-metric-value good">$202,000</div>
           </div>
           <div>
             <div class="hc-metric-label">Ownership</div>
@@ -485,6 +562,10 @@
             <div class="hc-metric-label">Distributions</div>
             <div class="hc-metric-value good">$37,000</div>
           </div>
+        </div>
+        <div class="hc-foot">
+          <span>Commitment $150,000</span>
+          <span style="color:var(--green);">Fully called</span>
         </div>
       </div>
     </div>
