@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vela — Prospect Pipeline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white: #FFFFFF;
+      --surface: #F8F7F4;
+      --border: #E5E3DE;
+      --border-md: #D1CEC8;
+      --text-primary: #111827;
+      --text-secondary: #6B7280;
+      --text-tertiary: #9CA3AF;
+      --blue: #185FA5;
+      --blue-light: #E6F1FB;
+      --blue-dark: #0C447C;
+      --green: #3B6D11;
+      --green-light: #EAF3DE;
+      --amber: #854F0B;
+      --amber-light: #FAEEDA;
+      --purple: #3C3489;
+      --purple-light: #EEEDFE;
+      --gray-light: #F1EFE8;
+      --gray-dark: #5F5E5A;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-primary);
+      background: var(--surface);
+      min-height: 100vh;
+    }
+
+    .app { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 200px;
+      flex-shrink: 0;
+      border-right: 0.5px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      z-index: 10;
+    }
+
+    .logo {
+      padding: 0 20px 24px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+    }
+    .logo-accent { color: var(--blue); }
+
+    .nav-label {
+      padding: 0 20px 6px;
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-top: 16px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 20px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-right: 2px solid transparent;
+      text-decoration: none;
+    }
+    .nav-item:hover { background: rgba(0,0,0,0.04); color: var(--text-primary); }
+    .nav-item.active {
+      background: var(--white);
+      border-right-color: var(--blue);
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .nav-item i { font-size: 16px; }
+    .nav-sep { height: 0.5px; background: var(--border); margin: 10px 20px; }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      margin-left: 200px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: var(--surface);
+    }
+
+    /* ── Top bar ── */
+    .top-bar {
+      background: var(--white);
+      border-bottom: 0.5px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .top-left { display: flex; align-items: center; gap: 16px; }
+
+    .page-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* Deal switcher */
+    .deal-switcher {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 0.5px solid var(--border-md);
+      border-radius: var(--radius-md);
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .deal-switcher i { font-size: 14px; color: var(--text-secondary); }
+
+    .deal-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    .top-right { display: flex; gap: 8px; align-items: center; }
+
+    .btn-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      border: none;
+    }
+
+    .btn-outline {
+      background: var(--white);
+      border: 0.5px solid var(--border-md);
+      color: var(--text-primary);
+    }
+
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-outline:hover { background: var(--surface); }
+    .btn-primary:hover { opacity: 0.9; }
+
+    /* ── Stats strip ── */
+    .stats-strip {
+      background: var(--white);
+      border-bottom: 0.5px solid var(--border);
+      display: flex;
+      padding: 0 28px;
+      flex-shrink: 0;
+    }
+
+    .strip-stat {
+      padding: 12px 24px 12px 0;
+      margin-right: 24px;
+      border-right: 0.5px solid var(--border);
+    }
+
+    .strip-stat:last-child { border-right: none; }
+
+    .ss-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-tertiary);
+      margin-bottom: 3px;
+    }
+
+    .ss-val {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .ss-sub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+
+    /* ── Kanban board ── */
+    .board-wrap {
+      flex: 1;
+      overflow-x: auto;
+      padding: 20px 28px 28px;
+    }
+
+    .board {
+      display: flex;
+      gap: 12px;
+      min-width: max-content;
+      align-items: flex-start;
+    }
+
+    /* ── Column ── */
+    .col {
+      width: 220px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .col-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: var(--white);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .col-hdr-left { display: flex; align-items: center; gap: 8px; }
+
+    .col-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+    }
+
+    .col-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .col-count {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 1px 7px;
+    }
+
+    .col-capital {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Stage colors */
+    .dot-prospect { background: #9CA3AF; }
+    .dot-contacted { background: #185FA5; }
+    .dot-engaged { background: #854F0B; }
+    .dot-reviewing { background: #7C3AED; }
+    .dot-committed { background: #059669; }
+    .dot-funded { background: #3B6D11; }
+
+    /* ── Investor card ── */
+    .inv-card {
+      background: var(--white);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      cursor: pointer;
+      transition: border-color 0.12s, box-shadow 0.12s;
+    }
+
+    .inv-card:hover {
+      border-color: var(--blue);
+      box-shadow: 0 2px 8px rgba(24,95,165,0.08);
+    }
+
+    .inv-top {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 9px;
+    }
+
+    .inv-avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .inv-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+    .inv-role { font-size: 11px; color: var(--text-secondary); }
+
+    .inv-amount {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .inv-tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .tag-referral { background: var(--green-light); color: var(--green); }
+    .tag-existing { background: var(--blue-light); color: var(--blue-dark); }
+    .tag-inbound { background: var(--purple-light); color: var(--purple); }
+    .tag-warm { background: var(--amber-light); color: var(--amber); }
+    .tag-cold { background: var(--gray-light); color: var(--gray-dark); }
+
+    .inv-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 8px;
+      border-top: 0.5px solid var(--border);
+    }
+
+    .inv-activity {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+
+    .inv-activity i { font-size: 12px; }
+
+    .inv-signal {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+    }
+
+    .signal-hot { color: var(--amber); }
+    .signal-warm { color: var(--blue); }
+    .signal-cold { color: var(--text-tertiary); }
+
+    /* Deal room viewed indicator */
+    .viewed-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--green);
+      background: var(--green-light);
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+
+    /* Add card button */
+    .add-card {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 12px;
+      border: 0.5px dashed var(--border-md);
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      background: transparent;
+      transition: border-color 0.12s, color 0.12s;
+    }
+
+    .add-card:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ── Side drawer (activity log) ── */
+    .activity-strip {
+      background: var(--white);
+      border-top: 0.5px solid var(--border);
+      padding: 14px 28px;
+      flex-shrink: 0;
+    }
+
+    .activity-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .activity-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .activity-list {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .act-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+      min-width: 220px;
+    }
+
+    .act-chip-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .act-chip-text { font-size: 12px; color: var(--text-primary); }
+    .act-chip-time { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">Ve<span class="logo-accent">la</span></div>
+    <div>
+      <div class="nav-label">Workspace</div>
+      <a class="nav-item" href="index.html"><i class="ti ti-home"></i> Dashboard</a>
+      <a class="nav-item" href="deal-room.html"><i class="ti ti-folder"></i> Deals</a>
+      <a class="nav-item active" href="prospect-pipeline.html"><i class="ti ti-user"></i> Investors</a>
+      <a class="nav-item" href="capital-call.html"><i class="ti ti-bell"></i> Capital Calls</a>
+      <a class="nav-item" href="#"><i class="ti ti-chart-bar"></i> Distributions</a>
+      <a class="nav-item" href="#"><i class="ti ti-file"></i> Documents</a>
+      <div class="nav-sep"></div>
+      <div class="nav-label">Account</div>
+      <a class="nav-item" href="#"><i class="ti ti-settings"></i> Settings</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+      <div class="top-left">
+        <span class="page-title">Investor Pipeline</span>
+        <div class="deal-switcher">
+          <div class="deal-dot"></div>
+          Oakwood Multifamily Fund I
+          <i class="ti ti-chevron-down"></i>
+        </div>
+      </div>
+      <div class="top-right">
+        <button class="btn-sm btn-outline"><i class="ti ti-filter"></i> Filter</button>
+        <button class="btn-sm btn-outline"><i class="ti ti-download"></i> Export</button>
+        <button class="btn-sm btn-primary"><i class="ti ti-plus"></i> Add prospect</button>
+      </div>
+    </div>
+
+    <!-- Stats strip -->
+    <div class="stats-strip">
+      <div class="strip-stat">
+        <div class="ss-label">Total prospects</div>
+        <div class="ss-val">38</div>
+        <div class="ss-sub">Across all stages</div>
+      </div>
+      <div class="strip-stat">
+        <div class="ss-label">Pipeline value</div>
+        <div class="ss-val">$9.8M</div>
+        <div class="ss-sub">Potential commitments</div>
+      </div>
+      <div class="strip-stat">
+        <div class="ss-label">Committed</div>
+        <div class="ss-val">$3.6M</div>
+        <div class="ss-sub">5 investors · signed</div>
+      </div>
+      <div class="strip-stat">
+        <div class="ss-label">Funded</div>
+        <div class="ss-val">$8.4M</div>
+        <div class="ss-sub">47 investors · wired</div>
+      </div>
+      <div class="strip-stat">
+        <div class="ss-label">Deal room views</div>
+        <div class="ss-val">124</div>
+        <div class="ss-sub">Last 30 days</div>
+      </div>
+    </div>
+
+    <!-- Kanban board -->
+    <div class="board-wrap">
+      <div class="board">
+
+        <!-- Prospect -->
+        <div class="col">
+          <div class="col-hdr">
+            <div class="col-hdr-left">
+              <div class="col-dot dot-prospect"></div>
+              <span class="col-name">Prospect</span>
+              <span class="col-count">8</span>
+            </div>
+            <span class="col-capital">$2.1M</span>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#6366F1;">MR</div>
+              <div>
+                <div class="inv-name">Michael Russo</div>
+                <div class="inv-role">CFO · Russo Holdings</div>
+              </div>
+            </div>
+            <div class="inv-amount">$250K–$500K</div>
+            <div class="inv-tags">
+              <span class="tag tag-referral">Referral · James R.</span>
+            </div>
+            <div class="inv-footer">
+              <div class="inv-activity"><i class="ti ti-clock"></i> Added 2 days ago</div>
+              <div class="inv-signal signal-warm"><i class="ti ti-flame"></i> Warm</div>
+            </div>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#D97706;">AK</div>
+              <div>
+                <div class="inv-name">Aisha Khan</div>
+                <div class="inv-role">Physician · Private investor</div>
+              </div>
+            </div>
+            <div class="inv-amount">$100K–$200K</div>
+            <div class="inv-tags">
+              <span class="tag tag-cold">Cold outreach</span>
+            </div>
+            <div class="inv-footer">
+              <div class="inv-activity"><i class="ti ti-clock"></i> Added 5 days ago</div>
+              <div class="inv-signal signal-cold"><i class="ti ti-minus"></i> Cold</div>
+            </div>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#059669;">BL</div>
+              <div>
+                <div class="inv-name">Brad Lawson</div>
+                <div class="inv-role">Attorney · Partner at MLG</div>
+              </div>
+            </div>
+            <div class="inv-amount">$150K</div>
+            <div class="inv-tags">
+              <span class="tag tag-warm">Event · CCIM Dallas</span>
+            </div>
+            <div class="inv-footer">
+              <div class="inv-activity"><i class="ti ti-clock"></i> Added 1 week ago</div>
+              <div class="inv-signal signal-warm"><i class="ti ti-flame"></i> Warm</div>
+            </div>
+          </div>
+
+          <button class="add-card"><i class="ti ti-plus"></i> Add prospect</button>
+        </div>
+
+        <!-- Contacted -->
+        <div class="col">
+          <div class="col-hdr">
+            <div class="col-hdr-left">
+              <div class="col-dot dot-contacted"></div>
+              <span class="col-name">Contacted</span>
+              <span class="col-count">7</span>
+            </div>
+            <span class="col-capital">$1.8M</span>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#7C3AED;">PN</div>
+              <div>
+                <div class="inv-name">Paul Nguyen</div>
+                <div class="inv-role">Engineer · FAANG · Palo Alto</div>
+              </div>
+            </div>
+            <div class="inv-amount">$200K</div>
+            <div class="inv-tags">
+              <span class="tag tag-inbound">Inbound · Inside Capital</span>
+            </div>
+            <div class="inv-footer">
+              <div class="inv-activity"><i class="ti ti-mail"></i> Emailed 3 days ago</div>
+              <div class="inv-signal signal-warm"><i class="ti ti-flame"></i> Warm</div>
+            </div>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#185FA5;">LW</div>
+              <div>
+                <div class="inv-name">Linda Wu</div>
+                <div class="inv-role">CPA · Business owner</div>
+              </div>
+            </div>
+            <div class="inv-amount">$100K–$250K</div>
+            <div class="inv-tags">
+              <span class="tag tag-referral">Referral · CPA network</span>
+            </div>
+            <div class="inv-footer">
+              <div class="inv-activity"><i class="ti ti-phone"></i> Called yesterday</div>
+              <div class="inv-signal signal-hot"><i class="ti ti-flame"></i> Hot</div>
+            </div>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#DC2626;">RG</div>
+              <div>
+                <div class="inv-name">Robert Garcia</div>
+                <div class="inv-role">Dentist · Serial investor</div>
+              </div>
+            </div>
+            <div class="inv-amount">$500K</div>
+            <div class="inv-tags">
+              <span class="tag tag-existing">Existing LP · Fund II</span>
+            </div>
+            <div class="inv-footer">
+              <div class="inv-activity"><i class="ti ti-mail"></i> Emailed 4 days ago</div>
+              <div class="inv-signal signal-hot"><i class="ti ti-flame"></i> Hot</div>
+            </div>
+          </div>
+
+          <button class="add-card"><i class="ti ti-plus"></i> Add prospect</button>
+        </div>
+
+        <!-- Engaged -->
+        <div class="col">
+          <div class="col-hdr">
+            <div class="col-hdr-left">
+              <div class="col-dot dot-engaged"></div>
+              <span class="col-name">Engaged</span>
+              <span class="col-count">9</span>
+            </div>
+            <span class="col-capital">$2.4M</span>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#854F0B;">DL</div>
+              <div>
+                <div class="inv-name">David Lee</div>
+                <div class="inv-role">VP Finance · DFW Corp</div>
+              </div>
+            </div>
+            <div class="inv-amount">$300K</div>
+            <div class="inv-tags">
+              <span class="tag tag-referral">Referral</span>
+            </div>
+            <span class="viewed-pill"><i class="ti ti-eye" style="font-size:11px;"></i> Viewed deck · 3×</span>
+            <div class="inv-footer" style="margin-top:8px;">
+              <div class="inv-activity"><i class="ti ti-calendar"></i> Call booked Jun 7</div>
+              <div class="inv-signal signal-hot"><i class="ti ti-flame"></i> Hot</div>
+            </div>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#0891B2;">SM</div>
+              <div>
+                <div class="inv-name">Sarah Mitchell</div>
+                <div class="inv-role">RIA client · Apex Advisors</div>
+              </div>
+            </div>
+            <div class="inv-amount">$150K</div>
+            <div class="inv-tags">
+              <span class="tag tag-existing">Via RIA</span>
+            </div>
+            <span class="viewed-pill"><i class="ti ti-eye" style="font-size:11px;"></i> Opened deal room · 2×</span>
+            <div class="inv-footer" style="margin-top:8px;">
+              <div class="inv-activity"><i class="ti ti-clock"></i> Last active 4h ago</div>
+              <div class="inv-signal signal-hot"><i class="ti ti-flame"></i> Hot</div>
+            </div>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#4F46E5;">TK</div>
+              <div>
+                <div class="inv-name">Tom Keller</div>
+                <div class="inv-role">Retired exec · Family office</div>
+              </div>
+            </div>
+            <div class="inv-amount">$500K–$1M</div>
+            <div class="inv-tags">
+              <span class="tag tag-warm">Conference · CCIM</span>
+            </div>
+            <span class="viewed-pill"><i class="ti ti-eye" style="font-size:11px;"></i> Viewed PPM · Yesterday</span>
+            <div class="inv-footer" style="margin-top:8px;">
+              <div class="inv-activity"><i class="ti ti-clock"></i> Follow-up due today</div>
+              <div class="inv-signal signal-hot"><i class="ti ti-flame"></i> Hot</div>
+            </div>
+          </div>
+
+          <button class="add-card"><i class="ti ti-plus"></i> Add prospect</button>
+        </div>
+
+        <!-- Reviewing -->
+        <div class="col">
+          <div class="col-hdr">
+            <div class="col-hdr-left">
+              <div class="col-dot dot-reviewing"></div>
+              <span class="col-name">Reviewing</span>
+              <span class="col-count">5</span>
+            </div>
+            <span class="col-capital">$1.3M</span>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#7C3AED;">JH</div>
+              <div>
+                <div class="inv-name">Jennifer Huang</div>
+                <div class="inv-role">Surgeon · HNW investor</div>
+              </div>
+            </div>
+            <div class="inv-amount">$250K</div>
+            <div class="inv-tags">
+              <span class="tag tag-referral">Referral · Tom K.</span>
+            </div>
+            <span class="viewed-pill"><i class="ti ti-eye" style="font-size:11px;"></i> PPM open · 45 min</span>
+            <div class="inv-footer" style="margin-top:8px;">
+              <div class="inv-activity"><i class="ti ti-file"></i> Sub docs sent</div>
+              <div class="inv-signal signal-hot"><i class="ti ti-flame"></i> Hot</div>
+            </div>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#0369A1;">WP</div>
+              <div>
+                <div class="inv-name">William Park</div>
+                <div class="inv-role">Real estate developer</div>
+              </div>
+            </div>
+            <div class="inv-amount">$500K</div>
+            <div class="inv-tags">
+              <span class="tag tag-existing">Existing LP · Fund I</span>
+            </div>
+            <span class="viewed-pill"><i class="ti ti-eye" style="font-size:11px;"></i> Model reviewed</span>
+            <div class="inv-footer" style="margin-top:8px;">
+              <div class="inv-activity"><i class="ti ti-calendar"></i> Q&amp;A call Jun 9</div>
+              <div class="inv-signal signal-hot"><i class="ti ti-flame"></i> Hot</div>
+            </div>
+          </div>
+
+          <button class="add-card"><i class="ti ti-plus"></i> Add prospect</button>
+        </div>
+
+        <!-- Committed -->
+        <div class="col">
+          <div class="col-hdr">
+            <div class="col-hdr-left">
+              <div class="col-dot dot-committed"></div>
+              <span class="col-name">Committed</span>
+              <span class="col-count">5</span>
+            </div>
+            <span class="col-capital">$1.1M</span>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#059669;">AM</div>
+              <div>
+                <div class="inv-name">Andrea Martinez</div>
+                <div class="inv-role">Business owner · Austin</div>
+              </div>
+            </div>
+            <div class="inv-amount">$200K · Signed</div>
+            <div class="inv-tags">
+              <span class="tag tag-referral">Referral</span>
+            </div>
+            <div class="inv-footer">
+              <div class="inv-activity"><i class="ti ti-check"></i> Docs complete</div>
+              <div class="inv-signal" style="color:var(--green);"><i class="ti ti-circle-check"></i> Wire pending</div>
+            </div>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#0D9488;">CB</div>
+              <div>
+                <div class="inv-name">Charles Brown</div>
+                <div class="inv-role">Attorney · Partner</div>
+              </div>
+            </div>
+            <div class="inv-amount">$150K · Signed</div>
+            <div class="inv-tags">
+              <span class="tag tag-inbound">Inbound</span>
+            </div>
+            <div class="inv-footer">
+              <div class="inv-activity"><i class="ti ti-check"></i> Docs complete</div>
+              <div class="inv-signal" style="color:var(--green);"><i class="ti ti-circle-check"></i> Wire pending</div>
+            </div>
+          </div>
+
+          <button class="add-card"><i class="ti ti-plus"></i> Add prospect</button>
+        </div>
+
+        <!-- Funded -->
+        <div class="col">
+          <div class="col-hdr">
+            <div class="col-hdr-left">
+              <div class="col-dot dot-funded"></div>
+              <span class="col-name">Funded</span>
+              <span class="col-count">47</span>
+            </div>
+            <span class="col-capital" style="color:var(--green);">$8.4M</span>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#3B6D11;">JR</div>
+              <div>
+                <div class="inv-name">James Russo</div>
+                <div class="inv-role">Investor · Dallas</div>
+              </div>
+            </div>
+            <div class="inv-amount" style="color:var(--green);">$250K · Wired</div>
+            <div class="inv-tags">
+              <span class="tag tag-existing">Repeat · 3rd deal</span>
+            </div>
+            <div class="inv-footer">
+              <div class="inv-activity"><i class="ti ti-clock"></i> Funded 2 hours ago</div>
+              <div class="inv-signal" style="color:var(--green);"><i class="ti ti-circle-check"></i> Complete</div>
+            </div>
+          </div>
+
+          <div class="inv-card">
+            <div class="inv-top">
+              <div class="inv-avatar" style="background:#166534;">EB</div>
+              <div>
+                <div class="inv-name">Elena Barnes</div>
+                <div class="inv-role">CFO · Tech startup</div>
+              </div>
+            </div>
+            <div class="inv-amount" style="color:var(--green);">$100K · Wired</div>
+            <div class="inv-tags">
+              <span class="tag tag-referral">Referral</span>
+            </div>
+            <div class="inv-footer">
+              <div class="inv-activity"><i class="ti ti-clock"></i> Funded May 30</div>
+              <div class="inv-signal" style="color:var(--green);"><i class="ti ti-circle-check"></i> Complete</div>
+            </div>
+          </div>
+
+          <div style="padding:8px 12px;background:var(--green-light);border-radius:var(--radius-md);text-align:center;">
+            <div style="font-size:11px;color:var(--green);font-weight:500;">+ 45 more funded investors</div>
+            <div style="font-size:10px;color:var(--green);opacity:0.8;margin-top:2px;">View all in LP Portal</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Activity strip -->
+    <div class="activity-strip">
+      <div class="activity-hdr">
+        <span class="activity-title">Recent pipeline activity</span>
+        <span style="font-size:11px;color:var(--blue);cursor:pointer;">View full log</span>
+      </div>
+      <div class="activity-list">
+        <div class="act-chip">
+          <div class="act-chip-dot" style="background:var(--green);"></div>
+          <div>
+            <div class="act-chip-text">James R. funded $250K</div>
+            <div class="act-chip-time">Oakwood · 2 hours ago</div>
+          </div>
+        </div>
+        <div class="act-chip">
+          <div class="act-chip-dot" style="background:var(--blue);"></div>
+          <div>
+            <div class="act-chip-text">Sarah M. opened deal room · 2nd time</div>
+            <div class="act-chip-time">Westfield · 4 hours ago</div>
+          </div>
+        </div>
+        <div class="act-chip">
+          <div class="act-chip-dot" style="background:var(--blue);"></div>
+          <div>
+            <div class="act-chip-text">Tom K. viewed PPM for 45 min</div>
+            <div class="act-chip-time">Oakwood · Yesterday</div>
+          </div>
+        </div>
+        <div class="act-chip">
+          <div class="act-chip-dot" style="background:var(--amber);"></div>
+          <div>
+            <div class="act-chip-text">Follow-up reminder: David L.</div>
+            <div class="act-chip-time">Oakwood · Yesterday · Due today</div>
+          </div>
+        </div>
+        <div class="act-chip">
+          <div class="act-chip-dot" style="background:var(--green);"></div>
+          <div>
+            <div class="act-chip-text">Jennifer H. signed subscription docs</div>
+            <div class="act-chip-time">Oakwood · 2 days ago</div>
+          </div>
+        </div>
+        <div class="act-chip">
+          <div class="act-chip-dot" style="background:var(--blue);"></div>
+          <div>
+            <div class="act-chip-text">Paul N. booked Q&amp;A call for Jun 8</div>
+            <div class="act-chip-time">Oakwood · 3 days ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
