@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vela — Investor Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white: #FFFFFF;
+      --surface: #F8F7F4;
+      --border: #E5E3DE;
+      --border-md: #D1CEC8;
+      --text-primary: #111827;
+      --text-secondary: #6B7280;
+      --text-tertiary: #9CA3AF;
+      --blue: #185FA5;
+      --blue-light: #E6F1FB;
+      --blue-dark: #0C447C;
+      --green: #3B6D11;
+      --green-light: #EAF3DE;
+      --amber: #854F0B;
+      --amber-light: #FAEEDA;
+      --navy: #1B3A5C;
+      --gray-light: #F1EFE8;
+      --gray-dark: #5F5E5A;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-primary);
+      background: var(--surface);
+      min-height: 100vh;
+    }
+
+    /* ── Investor-mode banner ── */
+    .mode-banner {
+      background: var(--navy);
+      color: rgba(255,255,255,0.85);
+      font-size: 11px;
+      padding: 6px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mode-banner a {
+      color: #fff;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 500;
+    }
+
+    /* ── Top header (sponsor-branded) ── */
+    .portal-header {
+      background: var(--white);
+      border-bottom: 0.5px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600; color: #fff;
+    }
+
+    .brand-name { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+    .brand-sub { font-size: 11px; color: var(--text-secondary); }
+
+    .powered {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .powered strong { color: var(--text-secondary); font-weight: 600; }
+
+    .header-right { display: flex; align-items: center; gap: 14px; }
+
+    .header-nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .hnav-item {
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .hnav-item.active { background: var(--surface); color: var(--text-primary); font-weight: 500; }
+    .hnav-item:hover { color: var(--text-primary); }
+
+    .investor-ava {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; color: #fff;
+    }
+
+    /* ── Main ── */
+    .container { max-width: 1040px; margin: 0 auto; padding: 28px 32px 40px; }
+
+    .welcome { margin-bottom: 24px; }
+    .welcome h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .welcome p { font-size: 13px; color: var(--text-secondary); }
+
+    /* ── Capital account hero ── */
+    .account-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      color: #fff;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .account-hero::after {
+      content: '';
+      position: absolute;
+      right: -60px; top: -40px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .ah-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 8px;
+    }
+
+    .ah-value {
+      font-size: 34px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .ah-change {
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ah-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 0.5px solid rgba(255,255,255,0.15);
+      position: relative;
+    }
+
+    .ah-stat-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 3px;
+    }
+
+    .ah-stat-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* ── Holdings cards ── */
+    .holdings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .holding-card {
+      background: var(--white);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+    }
+
+    .hc-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .hc-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+    .hc-type { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+
+    .hc-badge {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .hc-active { background: var(--blue-light); color: var(--blue-dark); }
+    .hc-closed { background: var(--green-light); color: var(--green); }
+
+    .hc-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .hc-metric-label {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+    }
+
+    .hc-metric-value { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+    .hc-metric-value.good { color: var(--green); }
+
+    /* ── Two-column body ── */
+    .body-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 320px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--white);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .panel-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .panel-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+    .panel-link { font-size: 11px; color: var(--blue); cursor: pointer; text-decoration: none; }
+
+    /* ── Transaction history ── */
+    .txn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 18px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .txn:last-child { border-bottom: none; }
+
+    .txn-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 17px;
+    }
+
+    .txn-out { background: var(--amber-light); color: var(--amber); }
+    .txn-in { background: var(--green-light); color: var(--green); }
+
+    .txn-info { flex: 1; }
+    .txn-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+    .txn-meta { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+
+    .txn-amount { font-size: 14px; font-weight: 600; text-align: right; }
+    .txn-amount.out { color: var(--text-primary); }
+    .txn-amount.in { color: var(--green); }
+    .txn-date { font-size: 11px; color: var(--text-tertiary); text-align: right; margin-top: 1px; }
+
+    /* ── Documents panel ── */
+    .doc-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 18px;
+      border-bottom: 0.5px solid var(--border);
+      cursor: pointer;
+    }
+    .doc-row:last-child { border-bottom: none; }
+    .doc-row:hover { background: var(--surface); }
+
+    .doc-ico {
+      width: 30px; height: 30px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .doc-pdf { background: #FCEBEB; color: #791F1F; }
+    .doc-tax { background: var(--green-light); color: var(--green); }
+
+    .doc-nm { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+    .doc-mt { font-size: 11px; color: var(--text-tertiary); }
+    .doc-dl { margin-left: auto; color: var(--text-tertiary); font-size: 15px; }
+
+    /* ── Updates panel ── */
+    .update-item {
+      padding: 14px 18px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .update-item:last-child { border-bottom: none; }
+
+    .update-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .update-deal {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--blue);
+    }
+    .update-date { font-size: 11px; color: var(--text-tertiary); }
+
+    .update-title { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 3px; }
+    .update-excerpt { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+    @media (max-width: 920px) {
+      .body-grid { grid-template-columns: 1fr; }
+      .holdings-grid { grid-template-columns: 1fr; }
+      .header-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Demo mode banner -->
+  <div class="mode-banner">
+    <span><i class="ti ti-eye" style="font-size:12px;"></i> Investor view — this is what your LP sees when they log in</span>
+    <a href="index.html"><i class="ti ti-arrow-left" style="font-size:12px;"></i> Back to sponsor dashboard</a>
+  </div>
+
+  <!-- Sponsor-branded header -->
+  <header class="portal-header">
+    <div class="brand">
+      <div class="brand-logo">MC</div>
+      <div>
+        <div class="brand-name">Meridian Capital Partners</div>
+        <div class="brand-sub">Investor Portal</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <nav class="header-nav">
+        <a class="hnav-item active" href="#">Overview</a>
+        <a class="hnav-item" href="#">Investments</a>
+        <a class="hnav-item" href="#">Documents</a>
+        <a class="hnav-item" href="#">Tax</a>
+      </nav>
+      <div class="powered">powered by <strong>Vela</strong></div>
+      <div class="investor-ava">RG</div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Welcome -->
+    <div class="welcome">
+      <h1>Welcome back, Robert</h1>
+      <p>Here's an overview of your investments with Meridian Capital Partners.</p>
+    </div>
+
+    <!-- Capital account hero -->
+    <div class="account-hero">
+      <div class="ah-label">Total capital account value</div>
+      <div class="ah-value">$612,400</div>
+      <div class="ah-change"><i class="ti ti-trending-up" style="font-size:14px;"></i> Across 2 active investments</div>
+      <div class="ah-stats">
+        <div>
+          <div class="ah-stat-label">Total invested</div>
+          <div class="ah-stat-value">$550,000</div>
+        </div>
+        <div>
+          <div class="ah-stat-label">Distributions received</div>
+          <div class="ah-stat-value">$48,200</div>
+        </div>
+        <div>
+          <div class="ah-stat-label">Unrealized gain</div>
+          <div class="ah-stat-value">$62,400</div>
+        </div>
+        <div>
+          <div class="ah-stat-label">Blended IRR</div>
+          <div class="ah-stat-value">17.2%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Holdings -->
+    <div class="holdings-grid">
+      <div class="holding-card">
+        <div class="hc-top">
+          <div>
+            <div class="hc-name">Oakwood Multifamily Fund I</div>
+            <div class="hc-type">Multifamily · Dallas–Fort Worth</div>
+          </div>
+          <span class="hc-badge hc-active">Active</span>
+        </div>
+        <div class="hc-metrics">
+          <div>
+            <div class="hc-metric-label">Your commitment</div>
+            <div class="hc-metric-value">$400,000</div>
+          </div>
+          <div>
+            <div class="hc-metric-label">Capital called</div>
+            <div class="hc-metric-value">$238,080</div>
+          </div>
+          <div>
+            <div class="hc-metric-label">Ownership</div>
+            <div class="hc-metric-value">5.95%</div>
+          </div>
+          <div>
+            <div class="hc-metric-label">Distributions</div>
+            <div class="hc-metric-value good">$11,200</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="holding-card">
+        <div class="hc-top">
+          <div>
+            <div class="hc-name">Meridian Office Conversion</div>
+            <div class="hc-type">Office → Residential · Austin</div>
+          </div>
+          <span class="hc-badge hc-closed">Performing</span>
+        </div>
+        <div class="hc-metrics">
+          <div>
+            <div class="hc-metric-label">Your commitment</div>
+            <div class="hc-metric-value">$150,000</div>
+          </div>
+          <div>
+            <div class="hc-metric-label">Capital called</div>
+            <div class="hc-metric-value">$150,000</div>
+          </div>
+          <div>
+            <div class="hc-metric-label">Ownership</div>
+            <div class="hc-metric-value">2.21%</div>
+          </div>
+          <div>
+            <div class="hc-metric-label">Distributions</div>
+            <div class="hc-metric-value good">$37,000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body grid -->
+    <div class="body-grid">
+
+      <!-- Left: transaction history -->
+      <div class="panel">
+        <div class="panel-hdr">
+          <span class="panel-title">Account activity</span>
+          <a class="panel-link" href="#">View all</a>
+        </div>
+
+        <div class="txn">
+          <div class="txn-icon txn-out"><i class="ti ti-arrow-up-right"></i></div>
+          <div class="txn-info">
+            <div class="txn-name">Capital Call #2 — Oakwood Fund I</div>
+            <div class="txn-meta">Due June 12, 2026 · Pending payment</div>
+          </div>
+          <div>
+            <div class="txn-amount out">$119,040</div>
+            <div class="txn-date">Action needed</div>
+          </div>
+        </div>
+
+        <div class="txn">
+          <div class="txn-icon txn-in"><i class="ti ti-arrow-down-left"></i></div>
+          <div class="txn-info">
+            <div class="txn-name">Quarterly Distribution — Meridian Office</div>
+            <div class="txn-meta">Q1 2026 operating cash flow</div>
+          </div>
+          <div>
+            <div class="txn-amount in">+$9,250</div>
+            <div class="txn-date">Apr 15, 2026</div>
+          </div>
+        </div>
+
+        <div class="txn">
+          <div class="txn-icon txn-in"><i class="ti ti-arrow-down-left"></i></div>
+          <div class="txn-info">
+            <div class="txn-name">Quarterly Distribution — Oakwood Fund I</div>
+            <div class="txn-meta">Q1 2026 operating cash flow</div>
+          </div>
+          <div>
+            <div class="txn-amount in">+$5,600</div>
+            <div class="txn-date">Apr 15, 2026</div>
+          </div>
+        </div>
+
+        <div class="txn">
+          <div class="txn-icon txn-out"><i class="ti ti-arrow-up-right"></i></div>
+          <div class="txn-info">
+            <div class="txn-name">Capital Call #1 — Oakwood Fund I</div>
+            <div class="txn-meta">Initial funding · Completed</div>
+          </div>
+          <div>
+            <div class="txn-amount out">$119,040</div>
+            <div class="txn-date">Feb 10, 2026</div>
+          </div>
+        </div>
+
+        <div class="txn">
+          <div class="txn-icon txn-in"><i class="ti ti-arrow-down-left"></i></div>
+          <div class="txn-info">
+            <div class="txn-name">Refinance Distribution — Meridian Office</div>
+            <div class="txn-meta">Cash-out refinance proceeds</div>
+          </div>
+          <div>
+            <div class="txn-amount in">+$27,750</div>
+            <div class="txn-date">Dec 20, 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Documents -->
+        <div class="panel">
+          <div class="panel-hdr">
+            <span class="panel-title">Your documents</span>
+            <a class="panel-link" href="#">All</a>
+          </div>
+          <div class="doc-row">
+            <div class="doc-ico doc-tax"><i class="ti ti-file-dollar"></i></div>
+            <div>
+              <div class="doc-nm">2025 Schedule K-1</div>
+              <div class="doc-mt">Oakwood Fund I · Mar 14, 2026</div>
+            </div>
+            <i class="ti ti-download doc-dl"></i>
+          </div>
+          <div class="doc-row">
+            <div class="doc-ico doc-tax"><i class="ti ti-file-dollar"></i></div>
+            <div>
+              <div class="doc-nm">2025 Schedule K-1</div>
+              <div class="doc-mt">Meridian Office · Mar 14, 2026</div>
+            </div>
+            <i class="ti ti-download doc-dl"></i>
+          </div>
+          <div class="doc-row">
+            <div class="doc-ico doc-pdf"><i class="ti ti-file-type-pdf"></i></div>
+            <div>
+              <div class="doc-nm">Subscription Agreement</div>
+              <div class="doc-mt">Oakwood Fund I · Signed</div>
+            </div>
+            <i class="ti ti-download doc-dl"></i>
+          </div>
+          <div class="doc-row">
+            <div class="doc-ico doc-pdf"><i class="ti ti-file-type-pdf"></i></div>
+            <div>
+              <div class="doc-nm">Q1 2026 Capital Statement</div>
+              <div class="doc-mt">ILPA PCAP · Apr 30, 2026</div>
+            </div>
+            <i class="ti ti-download doc-dl"></i>
+          </div>
+        </div>
+
+        <!-- Sponsor updates -->
+        <div class="panel">
+          <div class="panel-hdr">
+            <span class="panel-title">Updates from sponsor</span>
+          </div>
+          <div class="update-item">
+            <div class="update-top">
+              <span class="update-deal">Oakwood Fund I</span>
+              <span class="update-date">· May 28, 2026</span>
+            </div>
+            <div class="update-title">Renovation milestone reached</div>
+            <div class="update-excerpt">Phase 1 unit renovations complete on 84 of 312 units. Renewal rents tracking 12% above underwriting…</div>
+          </div>
+          <div class="update-item">
+            <div class="update-top">
+              <span class="update-deal">Meridian Office</span>
+              <span class="update-date">· Apr 15, 2026</span>
+            </div>
+            <div class="update-title">Q1 distribution declared</div>
+            <div class="update-excerpt">Strong leasing momentum in the residential conversion. Distributed $9,250 to your account this quarter…</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
