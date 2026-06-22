@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vela — Sponsor Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white: #FFFFFF;
+      --surface: #F8F7F4;
+      --border: #E5E3DE;
+      --border-md: #D1CEC8;
+      --text-primary: #111827;
+      --text-secondary: #6B7280;
+      --text-tertiary: #9CA3AF;
+      --blue: #185FA5;
+      --blue-light: #E6F1FB;
+      --blue-dark: #0C447C;
+      --green: #3B6D11;
+      --green-light: #EAF3DE;
+      --amber: #854F0B;
+      --amber-light: #FAEEDA;
+      --gray-light: #F1EFE8;
+      --gray-dark: #5F5E5A;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-primary);
+      background: var(--white);
+      min-height: 100vh;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 200px;
+      flex-shrink: 0;
+      border-right: 0.5px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+    }
+
+    .logo {
+      padding: 0 20px 24px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+    }
+
+    .logo-accent { color: var(--blue); }
+
+    .nav-section { flex: 1; }
+
+    .nav-label {
+      padding: 0 20px 6px;
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-top: 16px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 20px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-right: 2px solid transparent;
+      transition: background 0.1s;
+      text-decoration: none;
+    }
+
+    .nav-item:hover { background: rgba(0,0,0,0.04); color: var(--text-primary); }
+    .nav-item.active {
+      background: var(--white);
+      border-right-color: var(--blue);
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .nav-item i { font-size: 16px; }
+
+    .nav-sep {
+      height: 0.5px;
+      background: var(--border);
+      margin: 10px 20px;
+    }
+
+    .sidebar-bottom { padding: 0; }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      margin-left: 200px;
+      padding: 24px 28px;
+      background: var(--white);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .greet-name {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .greet-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border: 0.5px solid var(--border-md);
+      border-radius: var(--radius-md);
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .icon-btn:hover { background: var(--surface); }
+    .icon-btn i { font-size: 16px; }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .stat-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+
+    /* ── Content grid ── */
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 16px;
+    }
+
+    /* ── Section header ── */
+    .section-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .section-link {
+      font-size: 12px;
+      color: var(--blue);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* ── Deal cards ── */
+    .deal-card {
+      background: var(--white);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 10px;
+      transition: border-color 0.15s;
+    }
+
+    .deal-card:hover { border-color: var(--border-md); }
+    .deal-card:last-child { margin-bottom: 0; }
+    .deal-card.dimmed { opacity: 0.6; }
+
+    .deal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .deal-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .deal-type {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 4px;
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+    }
+
+    .badge-raising { background: var(--blue-light); color: var(--blue-dark); }
+    .badge-closed { background: var(--gray-light); color: var(--gray-dark); }
+
+    .prog-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .prog-left { font-size: 11px; color: var(--text-secondary); }
+    .prog-right { font-size: 11px; color: var(--text-secondary); }
+    .prog-right strong { color: var(--text-primary); font-weight: 500; }
+
+    .progress-bar {
+      height: 5px;
+      background: var(--border);
+      border-radius: 3px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--blue);
+    }
+
+    .progress-fill.complete { background: var(--green); }
+
+    .deal-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      border-top: 0.5px solid var(--border);
+      padding-top: 12px;
+    }
+
+    .metric-label {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .metric-value {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .metric-value.warn { color: var(--amber); }
+    .metric-value.info { color: var(--blue); }
+    .metric-value.good { color: var(--green); }
+
+    /* ── Right panel ── */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel {
+      background: var(--white);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+    }
+
+    .panel-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    /* Attention items */
+    .attn-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .attn-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .attn-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+
+    .attn-icon.urgent { background: var(--amber-light); color: var(--amber); }
+    .attn-icon.info { background: var(--blue-light); color: var(--blue); }
+
+    .attn-text { font-size: 12px; color: var(--text-primary); line-height: 1.4; }
+    .attn-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* Activity feed */
+    .act-item {
+      display: flex;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 0.5px solid var(--border);
+      align-items: flex-start;
+    }
+
+    .act-item:last-child { border-bottom: none; }
+
+    .act-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .dot-blue { background: var(--blue); }
+    .dot-green { background: var(--green); }
+    .dot-amber { background: var(--amber); }
+
+    .act-text { font-size: 12px; color: var(--text-primary); line-height: 1.4; }
+    .act-time { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
+
+    /* ── Prospect pipeline pill row ── */
+    .pipeline-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .stage-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      border: 0.5px solid var(--border);
+      background: var(--white);
+      color: var(--text-secondary);
+    }
+
+    .stage-count {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .content-grid { grid-template-columns: 1fr; }
+      .right-col { order: -1; }
+    }
+
+    @media (max-width: 640px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">Ve<span class="logo-accent">la</span></div>
+
+    <div class="nav-section">
+      <div class="nav-label">Workspace</div>
+      <a class="nav-item active" href="index.html">
+        <i class="ti ti-home" aria-hidden="true"></i> Dashboard
+      </a>
+      <a class="nav-item" href="deal-room.html">
+        <i class="ti ti-folder" aria-hidden="true"></i> Deals
+      </a>
+      <a class="nav-item" href="prospect-pipeline.html">
+        <i class="ti ti-user" aria-hidden="true"></i> Investors
+      </a>
+      <a class="nav-item" href="capital-call.html">
+        <i class="ti ti-bell" aria-hidden="true"></i> Capital Calls
+      </a>
+      <a class="nav-item" href="#">
+        <i class="ti ti-chart-bar" aria-hidden="true"></i> Distributions
+      </a>
+      <a class="nav-item" href="#">
+        <i class="ti ti-file" aria-hidden="true"></i> Documents
+      </a>
+
+      <div class="nav-sep"></div>
+
+      <div class="nav-label">Account</div>
+      <a class="nav-item" href="#">
+        <i class="ti ti-settings" aria-hidden="true"></i> Settings
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+      <div>
+        <div class="greet-name">Good morning, Pranav</div>
+        <div class="greet-sub">Wednesday, June 4 &mdash; 2 items need your attention</div>
+      </div>
+      <div class="top-actions">
+        <div class="icon-btn" title="Notifications"><i class="ti ti-bell" aria-hidden="true"></i></div>
+        <div class="icon-btn" title="Search"><i class="ti ti-search" aria-hidden="true"></i></div>
+        <div class="avatar" title="Pranav Chandra">PC</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Platform AUM</div>
+        <div class="stat-value">$20.5M</div>
+        <div class="stat-sub">Across 2 active deals</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total investors</div>
+        <div class="stat-value">61</div>
+        <div class="stat-sub">47 funded &middot; 14 pending</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Capital called</div>
+        <div class="stat-value">$10.5M</div>
+        <div class="stat-sub">YTD 2026</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Distributed</div>
+        <div class="stat-value">$1.2M</div>
+        <div class="stat-sub">YTD 2026</div>
+      </div>
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="content-grid">
+
+      <!-- Left: Deals -->
+      <div>
+        <div class="section-hdr">
+          <span class="section-title">Active deals</span>
+          <a class="section-link" href="#">View all <i class="ti ti-arrow-right" aria-hidden="true" style="font-size:11px;"></i></a>
+        </div>
+
+        <!-- Deal 1 -->
+        <div class="deal-card">
+          <div class="deal-top">
+            <div>
+              <div class="deal-name">Oakwood Multifamily Fund I</div>
+              <div class="deal-type">Multifamily &middot; Class B &middot; Dallas&ndash;Fort Worth</div>
+            </div>
+            <span class="badge badge-raising">Raising</span>
+          </div>
+          <div class="prog-labels">
+            <span class="prog-left">Capital raised</span>
+            <span class="prog-right"><strong>$8.4M</strong> of $12M target &middot; 70%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 70%;"></div>
+          </div>
+          <div class="deal-metrics">
+            <div>
+              <div class="metric-label">Investors</div>
+              <div class="metric-value">47</div>
+            </div>
+            <div>
+              <div class="metric-label">Last call</div>
+              <div class="metric-value">May 15</div>
+            </div>
+            <div>
+              <div class="metric-label">Next action</div>
+              <div class="metric-value warn">Call due Jun 12</div>
+            </div>
+          </div>
+          <div class="pipeline-row">
+            <div class="stage-pill"><span class="stage-count">12</span> Prospects</div>
+            <div class="stage-pill"><span class="stage-count">8</span> Engaged</div>
+            <div class="stage-pill"><span class="stage-count">5</span> Committed</div>
+          </div>
+        </div>
+
+        <!-- Deal 2 -->
+        <div class="deal-card">
+          <div class="deal-top">
+            <div>
+              <div class="deal-name">Westfield Industrial Portfolio</div>
+              <div class="deal-type">Industrial &middot; Last-mile logistics &middot; Phoenix</div>
+            </div>
+            <span class="badge badge-raising">Raising</span>
+          </div>
+          <div class="prog-labels">
+            <span class="prog-left">Capital raised</span>
+            <span class="prog-right"><strong>$2.1M</strong> of $8M target &middot; 26%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 26%;"></div>
+          </div>
+          <div class="deal-metrics">
+            <div>
+              <div class="metric-label">Investors</div>
+              <div class="metric-value">14</div>
+            </div>
+            <div>
+              <div class="metric-label">Prospects</div>
+              <div class="metric-value info">23 active</div>
+            </div>
+            <div>
+              <div class="metric-label">Next action</div>
+              <div class="metric-value info">3 follow-ups</div>
+            </div>
+          </div>
+          <div class="pipeline-row">
+            <div class="stage-pill"><span class="stage-count">23</span> Prospects</div>
+            <div class="stage-pill"><span class="stage-count">11</span> Engaged</div>
+            <div class="stage-pill"><span class="stage-count">3</span> Reviewing</div>
+          </div>
+        </div>
+
+        <!-- Deal 3 — closed -->
+        <div class="deal-card dimmed">
+          <div class="deal-top">
+            <div>
+              <div class="deal-name">Meridian Office Conversion Fund</div>
+              <div class="deal-type">Office-to-residential &middot; Austin &middot; Closed 2024</div>
+            </div>
+            <span class="badge badge-closed">Closed</span>
+          </div>
+          <div class="prog-labels">
+            <span class="prog-left">Final raise</span>
+            <span class="prog-right"><strong>$6.8M</strong> raised &middot; 105% of target</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill complete" style="width: 100%;"></div>
+          </div>
+          <div class="deal-metrics">
+            <div>
+              <div class="metric-label">Investors</div>
+              <div class="metric-value">38</div>
+            </div>
+            <div>
+              <div class="metric-label">Distributed</div>
+              <div class="metric-value">$1.2M</div>
+            </div>
+            <div>
+              <div class="metric-label">Proj. IRR</div>
+              <div class="metric-value good">18.4%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Panels -->
+      <div class="right-col">
+
+        <div class="panel">
+          <div class="panel-title">Needs attention</div>
+          <div class="attn-item">
+            <div class="attn-icon urgent"><i class="ti ti-bell" aria-hidden="true"></i></div>
+            <div>
+              <div class="attn-text">Capital call due Jun 12</div>
+              <div class="attn-sub">Oakwood Fund I &middot; $340K outstanding</div>
+            </div>
+          </div>
+          <div class="attn-item">
+            <div class="attn-icon info"><i class="ti ti-file" aria-hidden="true"></i></div>
+            <div>
+              <div class="attn-text">3 investors awaiting signature</div>
+              <div class="attn-sub">Westfield &middot; Sub docs pending</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Recent activity</div>
+          <div class="act-item">
+            <div class="act-dot dot-green"></div>
+            <div>
+              <div class="act-text">James R. funded $250K</div>
+              <div class="act-time">Oakwood &middot; 2 hours ago</div>
+            </div>
+          </div>
+          <div class="act-item">
+            <div class="act-dot dot-blue"></div>
+            <div>
+              <div class="act-text">Sarah M. opened deal room</div>
+              <div class="act-time">Westfield &middot; 4 hours ago</div>
+            </div>
+          </div>
+          <div class="act-item">
+            <div class="act-dot dot-blue"></div>
+            <div>
+              <div class="act-text">Tom K. viewed the PPM</div>
+              <div class="act-time">Westfield &middot; Yesterday</div>
+            </div>
+          </div>
+          <div class="act-item">
+            <div class="act-dot dot-amber"></div>
+            <div>
+              <div class="act-text">Follow-up reminder: David L.</div>
+              <div class="act-time">Westfield &middot; Yesterday</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">This week</div>
+          <div class="act-item">
+            <div class="act-dot dot-blue" style="margin-top:5px;"></div>
+            <div>
+              <div class="act-text">Send Q2 update to Oakwood LPs</div>
+              <div class="act-time">Due Friday</div>
+            </div>
+          </div>
+          <div class="act-item">
+            <div class="act-dot dot-amber" style="margin-top:5px;"></div>
+            <div>
+              <div class="act-text">Review Westfield sub docs</div>
+              <div class="act-time">3 pending signatures</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>
